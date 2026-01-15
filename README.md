@@ -2,54 +2,73 @@
 public class Main {
     public static void main(String[] args) {
 
-        // Create a Song object using the constructor
+        // Create a Song object
         Song mySong = new Song("Golden Hour", "JVKE", 209);
 
-        // Use getters to show initial values
-        System.out.println("Title: " + mySong.getTitle());
-        System.out.println("Duration: " + mySong.getDuration());
+        // Display initial values
+        System.out.println(mySong);
 
-        // Update duration using setter (valid update)
+        // Valid update
         mySong.setDuration(250);
-        System.out.println("Updated Duration: " + mySong.getDuration());
+        System.out.println("After valid update:");
+        System.out.println(mySong);
 
-        // Attempt to update duration with an invalid value (should be rejected)
+        // Invalid update (should be rejected safely)
         mySong.setDuration(-5);
-        System.out.println("Updated Duration (after invalid attempt): " + mySong.getDuration());
+        System.out.println("After invalid update attempt:");
+        System.out.println(mySong);
     }
 }
 
 class Song {
 
-    // Private fields: these values must be hidden from other classes
-    private String title;
-    private String artist;
+    // Constants improve readability and reusability
+    private static final int MAX_DURATION = 600; // 10 minutes
+
+    // Private fields (encapsulation)
+    private final String title;
+    private final String artist;
     private int durationInSeconds;
 
-    // Constructor: used to create a Song object with initial values
+    // Constructor with validation
     public Song(String title, String artist, int durationInSeconds) {
         this.title = title;
         this.artist = artist;
-
-        // Use setter so validation applies at creation
         setDuration(durationInSeconds);
     }
 
-    // Getter: allows safe read-only access to the title
+    // Getters (read-only access)
     public String getTitle() {
         return title;
     }
 
-    // Getter: allows read-only access to the duration
+    public String getArtist() {
+        return artist;
+    }
+
     public int getDuration() {
         return durationInSeconds;
     }
 
-    // Setter with validation
+    // Setter with strong validation and safe rejection
     public void setDuration(int durationInSeconds) {
-        if (durationInSeconds > 0) {
+        if (durationInSeconds > 0 && durationInSeconds <= MAX_DURATION) {
             this.durationInSeconds = durationInSeconds;
+        } else {
+            // Safe rejection (no crash, no corruption)
+            System.out.println(
+                "Invalid duration ignored: " + durationInSeconds +
+                " (must be between 1 and " + MAX_DURATION + " seconds)"
+            );
         }
-        // Invalid values are ignored
+    }
+
+    // toString improves reuse, debugging, and clean output
+    @Override
+    public String toString() {
+        return "Song Details:\n" +
+               "Title: " + title + "\n" +
+               "Artist: " + artist + "\n" +
+               "Duration: " + durationInSeconds + " seconds\n";
     }
 }
